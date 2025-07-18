@@ -432,7 +432,8 @@ function secondsToMinutesSeconds(seconds) {
 
 async function getSongs(folder) {
   try {
-    const url = `https://rushikesh0864.github.io/Spotify-Frontend-/songs/${folder}/info.json?ts=${Date.now()}`;
+  const url = `https://rushikesh0864.github.io/Spotify-Frontend-/songs/${encodeURIComponent(folder)}/info.json?ts=${Date.now()}`;
+
     const response = await fetch(url);
     const data = await response.json();
 
@@ -443,7 +444,8 @@ async function getSongs(folder) {
 
     songs = data.songs.map(song => ({
       title: song,
-      path: `https://rushikesh0864.github.io/Spotify-Frontend-/songs/${folder}/${song}`
+      path: `https://rushikesh0864.github.io/Spotify-Frontend-/songs/${encodeURIComponent(folder)}/${encodeURIComponent(song)}`
+
     }));
 
     currentFolder = folder;
@@ -509,7 +511,8 @@ async function displayAlbums() {
 
   for (const folder of folders) {
     try {
-      const url = `https://rushikesh0864.github.io/Spotify-Frontend-/songs/${folder}/info.json?ts=${Date.now()}`;
+      const url = `https://rushikesh0864.github.io/Spotify-Frontend-/songs/${encodeURIComponent(folder)}/info.json?ts=${Date.now()}`;
+
       const res = await fetch(url);
       if (!res.ok) throw new Error(`Status ${res.status}`);
       const data = await res.json();
@@ -517,8 +520,8 @@ async function displayAlbums() {
       const card = document.createElement("div");
       card.className = "albumCard";
       card.innerHTML = `
-        <img src="https://rushikesh0864.github.io/Spotify-Frontend-/songs/${folder}/cover.jpg" 
-             onerror="this.src='default.jpg'" />
+        <img src="https://rushikesh0864.github.io/Spotify-Frontend-/songs/${encodeURIComponent(folder)}/cover.jpg"
+       onerror="this.src='cover.jpg'" />
         <h3>${data.title}</h3>
         <p>${data.description}</p>
         <button onclick="getSongs('${folder}')">Open</button>
