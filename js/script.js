@@ -420,7 +420,7 @@ let currentIndex = 0;
 
 const folders = [
   "Angry_(mood)", "Bright_(mood)", "Chill_(mood)", "cs", "Dark_(mood)",
-  "Diljit", "ncs", "Funky_(mood)", "Kran_aujla", "romantic", "Uplifitng_(mood)"
+  "Diljit", "ncs", "Funky_(mood)", "Kran_aujla", "Love_(mood)", "Uplifitng_(mood)"
 ];
 
 function secondsToMinutesSeconds(seconds) {
