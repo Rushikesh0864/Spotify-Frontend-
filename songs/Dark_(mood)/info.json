@@ -1,5 +1,5 @@
 {
     "title": "Dark Horse",
     "description": "Dark Songs for you",
-    "songs": "We Don't Talk Anymore-CP.mp3"
+    "songs": ["We Don't Talk Anymore-CP.mp3"]
 }

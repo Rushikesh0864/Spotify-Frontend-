@@ -413,7 +413,8 @@
 
 // main();
 
-console.log("Lets write js");
+console.log("Let's write JS");
+
 let currentSong = new Audio();
 let songs = [];
 let currFolder = "";
@@ -426,14 +427,13 @@ function secondsToMinutesSeconds(seconds) {
   return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
 }
 
-// Fetch songs list from songs.json in the folder
+// Fetch songs from info.json in selected folder
 async function getSongs(folder) {
   currFolder = folder;
-  const res = await fetch(`${folder}/songs.json`);
+  const res = await fetch(`${folder}/info.json`);
   const data = await res.json();
   songs = data.songs;
 
-  // populate song list in sidebar
   const songUL = document.querySelector(".songList ul");
   songUL.innerHTML = "";
   songs.forEach(song => {
@@ -444,18 +444,18 @@ async function getSongs(folder) {
     </li>`;
   });
 
-  // attach click handlers
-  Array.from(songUL.children).forEach(li =>
+  // Add click listeners to songs
+  Array.from(songUL.children).forEach(li => {
     li.addEventListener("click", () => {
       const track = li.querySelector(".info div").innerText.trim();
       playMusic(track);
-    })
-  );
+    });
+  });
 
   return songs;
 }
 
-// Play a selected track
+// Play a selected song
 const playMusic = (track, pause = false) => {
   currentSong.src = `${currFolder}/${track}`;
   if (!pause) {
@@ -463,45 +463,48 @@ const playMusic = (track, pause = false) => {
     document.getElementById("play").src = "img/pause.svg";
   }
   document.querySelector(".songinfo").innerText = decodeURI(track);
-  document.querySelector(".songtime").innerText = "00:00/00:00";
+  document.querySelector(".songtime").innerText = "00:00 / 00:00";
 };
 
-// Display album cards from fixed folder list
+// Display album cards using info.json
 async function displayAlbums() {
-  const folders = ["Angry_(mood)", "Bright_(mood)", "Chill_(mood)", "cs", "Dark_(mood)", "Diljit",  "ncs", "Funky_(mood)", "Kran_aujla", "romantic", "Uplifitng_(mood)"];
+  const folders = ["Angry_(mood)", "Bright_(mood)", "Chill_(mood)", "cs", "Dark_(mood)", "Diljit", "ncs", "Funky_(mood)", "Kran_aujla", "romantic", "Uplifitng_(mood)"];
   const cardContainer = document.querySelector(".cardContainer");
+  cardContainer.innerHTML = "";
+
   for (const folder of folders) {
     try {
-      const res = await fetch(`${folder}/songs.json`);
+      const res = await fetch(`${folder}/info.json`);
       const { title, description } = await res.json();
-      const name = folder.split("/").pop();
+
       cardContainer.innerHTML += `<div data-folder="${folder}" class="card">
         <div class="play"><svg width="16" height="16" ...></svg></div>
         <img src="${folder}/cover.jpg" alt="">
         <h2>${title}</h2>
         <p>${description}</p>
       </div>`;
-    } catch (e) {
-      console.error("Missing songs.json in", folder);
+    } catch (err) {
+      console.error(`Missing or invalid info.json in folder: ${folder}`, err);
     }
   }
 
-  document.querySelectorAll(".card").forEach(card =>
+  // Add click listeners to cards
+  document.querySelectorAll(".card").forEach(card => {
     card.addEventListener("click", async e => {
       const folder = e.currentTarget.dataset.folder;
       await getSongs(folder);
       playMusic(songs[0]);
-    })
-  );
+    });
+  });
 }
 
-// Main function to initialize
+// Main function
 async function main() {
-  await getSongs("songs/ncs"); // default folder
+  await getSongs("ncs"); // Default folder
   playMusic(songs[0], true);
   await displayAlbums();
 
-  // play/pause toggle
+  // Play/pause button
   document.getElementById("play").addEventListener("click", () => {
     if (currentSong.paused) {
       currentSong.play();
@@ -512,7 +515,7 @@ async function main() {
     }
   });
 
-  // update time and seek bar
+  // Time update
   currentSong.addEventListener("timeupdate", () => {
     document.querySelector(".songtime").innerText =
       `${secondsToMinutesSeconds(currentSong.currentTime)} / ${secondsToMinutesSeconds(currentSong.duration)}`;
@@ -520,12 +523,13 @@ async function main() {
       (currentSong.currentTime / currentSong.duration) * 100 + "%";
   });
 
+  // Seekbar click
   document.querySelector(".seekbar").addEventListener("click", e => {
     const percent = e.offsetX / e.target.getBoundingClientRect().width;
     currentSong.currentTime = percent * currentSong.duration;
   });
 
-  // mobile nav
+  // Mobile nav toggle
   document.querySelector(".hamburger").addEventListener("click", () => {
     document.querySelector(".left").style.left = "0";
   });
@@ -533,7 +537,7 @@ async function main() {
     document.querySelector(".left").style.left = "-120%";
   });
 
-  // previous / next
+  // Previous & Next
   document.getElementById("previous").addEventListener("click", () => {
     const idx = songs.indexOf(currentSong.src.split("/").pop());
     if (idx > 0) playMusic(songs[idx - 1]);
@@ -543,14 +547,14 @@ async function main() {
     if (idx < songs.length - 1) playMusic(songs[idx + 1]);
   });
 
-  // autoplay next when ends
+  // Auto next song
   currentSong.addEventListener("ended", () => {
     const idx = songs.indexOf(currentSong.src.split("/").pop());
-    playMusic(songs[idx + 1 < songs.length ? idx + 1 : 0]);
+    playMusic(songs[(idx + 1) % songs.length]);
   });
 
-  // volume
-  document.querySelector(".range input").addEventListener("change", e => {
+  // Volume control
+  document.querySelector(".range input").addEventListener("input", e => {
     currentSong.volume = e.target.value / 100;
   });
   document.querySelector(".volume>img").addEventListener("click", e => {
