@@ -413,6 +413,8 @@
 
 // main();
 
+// js/script.js
+
 let currentSong = new Audio();
 let songs = [];
 let currentFolder = '';
@@ -452,74 +454,89 @@ async function getSongs(folder) {
 function loadSong(index) {
   currentIndex = index;
   currentSong.src = songs[index].path;
-  document.querySelector(".current").innerText = songs[index].title;
+  document.querySelector(".songinfo").innerText = songs[index].title;
   currentSong.play();
-  playPauseIcon();
+  updatePlayButton();
 }
 
 function displaySongList() {
-  const container = document.querySelector(".songList");
+  const container = document.querySelector(".songList ul");
+  if (!container) return;
   container.innerHTML = "";
   songs.forEach((song, index) => {
-    const div = document.createElement("div");
-    div.className = "songItem";
-    div.innerHTML = `
+    const li = document.createElement("li");
+    li.innerHTML = `
       <span>${index + 1}. ${song.title}</span>
       <button onclick="loadSong(${index})">Play</button>
     `;
-    container.appendChild(div);
+    container.appendChild(li);
   });
 }
 
-function playPauseIcon() {
-  const playBtn = document.querySelector(".play-pause");
+function updatePlayButton() {
+  const playBtn = document.getElementById("play");
   if (!playBtn) return;
-  playBtn.innerText = currentSong.paused ? "Play" : "Pause";
+  playBtn.src = currentSong.paused ? "img/play.svg" : "img/pause.svg";
 }
 
-document.querySelector(".play-pause").addEventListener("click", () => {
-  if (currentSong.paused) {
-    currentSong.play();
-  } else {
-    currentSong.pause();
+document.addEventListener("DOMContentLoaded", () => {
+  const playBtn = document.getElementById("play");
+  if (playBtn) {
+    playBtn.addEventListener("click", () => {
+      if (currentSong.paused) {
+        currentSong.play();
+      } else {
+        currentSong.pause();
+      }
+      updatePlayButton();
+    });
   }
-  playPauseIcon();
-});
 
-currentSong.addEventListener("timeupdate", () => {
-  const timeElem = document.querySelector(".songtime");
-  if (timeElem) {
-    timeElem.innerText = `${secondsToMinutesSeconds(currentSong.currentTime)} / ${secondsToMinutesSeconds(currentSong.duration)}`;
-  }
-});
-
-async function displayAlbums() {
-  const container = document.querySelector(".albumList");
-  if (!container) return;
-
-  for (const folder of folders) {
-    try {
-      const url = `https://rushikesh0864.github.io/Spotify-Frontend-/songs/${folder}/info.json?ts=${Date.now()}`;
-      const res = await fetch(url);
-      const data = await res.json();
-
-      const card = document.createElement("div");
-      card.className = "albumCard";
-      card.innerHTML = `
-        <img src="https://rushikesh0864.github.io/Spotify-Frontend-/songs/${folder}/cover.jpg" onerror="this.src='default.jpg'" />
-        <h3>${data.title}</h3>
-        <p>${data.description}</p>
-        <button onclick="getSongs('${folder}')">Open</button>
-      `;
-      container.appendChild(card);
-    } catch (err) {
-      console.error(`Failed to load album ${folder}`, err);
+  document.getElementById("next").addEventListener("click", () => {
+    if (currentIndex < songs.length - 1) {
+      loadSong(currentIndex + 1);
     }
+  });
+
+  document.getElementById("previous").addEventListener("click", () => {
+    if (currentIndex > 0) {
+      loadSong(currentIndex - 1);
+    }
+  });
+
+  currentSong.addEventListener("timeupdate", () => {
+    const timeElem = document.querySelector(".songtime");
+    if (timeElem) {
+      timeElem.innerText = `${secondsToMinutesSeconds(currentSong.currentTime)} / ${secondsToMinutesSeconds(currentSong.duration)}`;
+    }
+  });
+
+  // Dynamic folder cards
+  const cardContainer = document.querySelector(".cardContainer");
+  if (cardContainer) {
+    folders.forEach(async (folder) => {
+      try {
+        const res = await fetch(`https://rushikesh0864.github.io/Spotify-Frontend-/songs/${folder}/info.json`);
+        const data = await res.json();
+
+        const card = document.createElement("div");
+        card.className = "card";
+        card.setAttribute("data-folder", folder);
+        card.innerHTML = `
+          <div class="play">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5 20V4L19 12L5 20Z" stroke="#141B34" stroke-width="1.5" fill="#000" stroke-linejoin="round" />
+            </svg>
+          </div>
+          <img src="https://rushikesh0864.github.io/Spotify-Frontend-/songs/${folder}/cover.jpg" onerror="this.src='default.jpg'" alt="cover">
+          <h2>${data.title}</h2>
+          <p>${data.description}</p>
+        `;
+        card.addEventListener("click", () => getSongs(folder));
+        cardContainer.appendChild(card);
+      } catch (err) {
+        console.error(`Failed to load card for folder ${folder}`, err);
+      }
+    });
   }
-}
-
-function main() {
-  displayAlbums();
-}
-
-main();
+});
