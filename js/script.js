@@ -422,7 +422,7 @@ let currentIndex = 0;
 
 const folders = [
   "Angry", "Bright", "Chill", "cs", "Dark",
-  "Diljit", "ncs", "Funky", "Karanaujla", "Love", "Uplifitng"
+  "Diljit", "ncs", "Funky", "Karanaujla", "Love", "Uplifting"
 ];
 
 function secondsToMinutesSeconds(seconds) {
@@ -476,7 +476,7 @@ function displaySongList() {
 function updatePlayButton() {
   const playBtn = document.getElementById("play");
   if (!playBtn) return;
-  playBtn.src = currentSong.paused ? "img/play.svg" : "img/pause.svg";
+  playBtn.src = currentSong.paused ? "" : "img/pause.svg";
 }
 
 document.addEventListener("DOMContentLoaded", () => {
