@@ -419,8 +419,8 @@
 
 let currentSong = new Audio();
 let songs = [];
-let currentFolder = '';
 let currentIndex = 0;
+let currentFolder = '';
 
 const folders = [
   "Angry", "Bright", "Chill", "cs", "Dark",
@@ -428,7 +428,7 @@ const folders = [
 ];
 
 function secondsToMinutesSeconds(seconds) {
-  if (isNaN(seconds) || seconds < 0) return "00:00";
+  if (isNaN(seconds)) return "00:00";
   const m = Math.floor(seconds / 60);
   const s = Math.floor(seconds % 60);
   return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
@@ -436,7 +436,7 @@ function secondsToMinutesSeconds(seconds) {
 
 async function getSongs(folder) {
   try {
-    const url = `https://rushikesh0864.github.io/Spotify-Frontend-/songs/${folder}/info.json?ts=${Date.now()}`;
+    const url = `https://rushikesh0864.github.io/Spotify-Frontend-/songs/${folder}/info.json`;
     const response = await fetch(url);
     const data = await response.json();
 
@@ -449,11 +449,13 @@ async function getSongs(folder) {
     loadSong(0);
     displaySongList();
   } catch (error) {
-    console.error(`Error loading songs from folder "${folder}":`, error);
+    console.error(`❌ Failed to load songs from "${folder}"`, error);
   }
 }
 
 function loadSong(index) {
+  if (!songs[index]) return;
+
   currentIndex = index;
   currentSong.src = songs[index].path;
   document.querySelector(".songinfo").innerText = songs[index].title;
@@ -462,16 +464,17 @@ function loadSong(index) {
 }
 
 function displaySongList() {
-  const container = document.querySelector(".songList ul");
-  if (!container) return;
-  container.innerHTML = "";
+  const ul = document.querySelector(".songList ul");
+  if (!ul) return;
+
+  ul.innerHTML = "";
   songs.forEach((song, index) => {
     const li = document.createElement("li");
     li.innerHTML = `
       <span>${index + 1}. ${song.title}</span>
       <button onclick="loadSong(${index})">Play</button>
     `;
-    container.appendChild(li);
+    ul.appendChild(li);
   });
 }
 
@@ -481,15 +484,22 @@ function updatePlayButton() {
   playBtn.src = currentSong.paused ? "img/play.svg" : "img/pause.svg";
 }
 
-function updateMuteButton() {
-  const muteBtn = document.getElementById("mute");
-  if (!muteBtn) return;
-  muteBtn.src = currentSong.muted ? "img/unmute.svg" : "img/mute.svg";
+function updateTimeDisplay() {
+  const timeElem = document.querySelector(".songtime");
+  if (timeElem) {
+    timeElem.innerText = `${secondsToMinutesSeconds(currentSong.currentTime)} / ${secondsToMinutesSeconds(currentSong.duration)}`;
+  }
+}
+
+function updateVolume(volume) {
+  currentSong.volume = volume;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   const playBtn = document.getElementById("play");
-  const muteBtn = document.getElementById("mute");
+  const nextBtn = document.getElementById("next");
+  const prevBtn = document.getElementById("previous");
+  const volumeSlider = document.querySelector(".range input");
 
   if (playBtn) {
     playBtn.addEventListener("click", () => {
@@ -502,60 +512,57 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  if (muteBtn) {
-    muteBtn.addEventListener("click", () => {
-      currentSong.muted = !currentSong.muted;
-      updateMuteButton();
-    });
-  }
-
-  document.getElementById("next").addEventListener("click", () => {
-    if (currentIndex < songs.length - 1) {
-      loadSong(currentIndex + 1);
-    }
-  });
-
-  document.getElementById("previous").addEventListener("click", () => {
-    if (currentIndex > 0) {
-      loadSong(currentIndex - 1);
-    }
-  });
-
-  currentSong.addEventListener("timeupdate", () => {
-    const timeElem = document.querySelector(".songtime");
-    if (timeElem) {
-      timeElem.innerText = `${secondsToMinutesSeconds(currentSong.currentTime)} / ${secondsToMinutesSeconds(currentSong.duration)}`;
-    }
-  });
-
-  // Load folder cards
-  const cardContainer = document.querySelector(".cardContainer");
-  if (cardContainer) {
-    folders.forEach(async (folder) => {
-      try {
-        const res = await fetch(`https://rushikesh0864.github.io/Spotify-Frontend-/songs/${folder}/info.json`);
-        const data = await res.json();
-
-        const card = document.createElement("div");
-        card.className = "card";
-        card.setAttribute("data-folder", folder);
-        card.innerHTML = `
-          <div class="play">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                 xmlns="http://www.w3.org/2000/svg">
-              <path d="M5 20V4L19 12L5 20Z" stroke="#141B34" stroke-width="1.5" fill="#000" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          <img src="https://rushikesh0864.github.io/Spotify-Frontend-/songs/${folder}/cover.jpg"
-               onerror="this.src='img/default.jpg'" alt="cover">
-          <h2>${data.title}</h2>
-          <p>${data.description}</p>
-        `;
-        card.addEventListener("click", () => getSongs(folder));
-        cardContainer.appendChild(card);
-      } catch (err) {
-        console.error(`Failed to load card for folder ${folder}`, err);
+  if (nextBtn) {
+    nextBtn.addEventListener("click", () => {
+      if (currentIndex < songs.length - 1) {
+        loadSong(currentIndex + 1);
       }
     });
   }
+
+  if (prevBtn) {
+    prevBtn.addEventListener("click", () => {
+      if (currentIndex > 0) {
+        loadSong(currentIndex - 1);
+      }
+    });
+  }
+
+  if (volumeSlider) {
+    volumeSlider.addEventListener("input", (e) => {
+      updateVolume(e.target.value);
+    });
+  }
+
+  currentSong.addEventListener("timeupdate", updateTimeDisplay);
+
+  // Load all folder cards dynamically
+  const cardContainer = document.querySelector(".cardContainer");
+  folders.forEach(async (folder) => {
+    try {
+      const res = await fetch(`https://rushikesh0864.github.io/Spotify-Frontend-/songs/${folder}/info.json`);
+      const data = await res.json();
+
+      const card = document.createElement("div");
+      card.className = "card";
+      card.setAttribute("data-folder", folder);
+      card.innerHTML = `
+        <div class="play">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+            <path d="M5 20V4L19 12L5 20Z" stroke="#141B34"
+              stroke-width="1.5" fill="#000" stroke-linejoin="round" />
+          </svg>
+        </div>
+        <img src="https://rushikesh0864.github.io/Spotify-Frontend-/songs/${folder}/cover.jpg"
+             onerror="this.src='img/default.jpg'" alt="cover">
+        <h2>${data.title}</h2>
+        <p>${data.description}</p>
+      `;
+      card.addEventListener("click", () => getSongs(folder));
+      cardContainer.appendChild(card);
+    } catch (err) {
+      console.error(`❌ Failed to load card for folder "${folder}"`, err);
+    }
+  });
 });
