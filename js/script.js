@@ -436,6 +436,11 @@ async function getSongs(folder) {
     const response = await fetch(url);
     const data = await response.json();
 
+    if (!data.songs || !Array.isArray(data.songs)) {
+      console.warn(`No valid 'songs' array found in ${folder}`);
+      return;
+    }
+
     songs = data.songs.map(song => ({
       title: song,
       path: `https://rushikesh0864.github.io/Spotify-Frontend-/songs/${folder}/${song}`
@@ -452,13 +457,16 @@ async function getSongs(folder) {
 function loadSong(index) {
   currentIndex = index;
   currentSong.src = songs[index].path;
-  document.querySelector(".current").innerText = songs[index].title;
+  const currentElem = document.querySelector(".current");
+  if (currentElem) currentElem.innerText = songs[index].title;
   currentSong.play();
   playPauseIcon();
 }
 
 function displaySongList() {
   const container = document.querySelector(".songList");
+  if (!container) return;
+
   container.innerHTML = "";
   songs.forEach((song, index) => {
     const div = document.createElement("div");
@@ -477,7 +485,7 @@ function playPauseIcon() {
   playBtn.innerText = currentSong.paused ? "Play" : "Pause";
 }
 
-document.querySelector(".play-pause").addEventListener("click", () => {
+document.querySelector(".play-pause")?.addEventListener("click", () => {
   if (currentSong.paused) {
     currentSong.play();
   } else {
@@ -497,23 +505,27 @@ async function displayAlbums() {
   const container = document.querySelector(".albumList");
   if (!container) return;
 
+  container.innerHTML = "";
+
   for (const folder of folders) {
     try {
       const url = `https://rushikesh0864.github.io/Spotify-Frontend-/songs/${folder}/info.json?ts=${Date.now()}`;
       const res = await fetch(url);
+      if (!res.ok) throw new Error(`Status ${res.status}`);
       const data = await res.json();
 
       const card = document.createElement("div");
       card.className = "albumCard";
       card.innerHTML = `
-        <img src="https://rushikesh0864.github.io/Spotify-Frontend-/songs/${folder}/cover.jpg" onerror="this.src='default.jpg'" />
+        <img src="https://rushikesh0864.github.io/Spotify-Frontend-/songs/${folder}/cover.jpg" 
+             onerror="this.src='default.jpg'" />
         <h3>${data.title}</h3>
         <p>${data.description}</p>
         <button onclick="getSongs('${folder}')">Open</button>
       `;
       container.appendChild(card);
     } catch (err) {
-      console.error(`Failed to load album ${folder}`, err);
+      console.error(`❌ Failed to load album ${folder}`, err);
     }
   }
 }
