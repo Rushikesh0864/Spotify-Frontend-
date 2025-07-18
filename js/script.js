@@ -433,6 +433,8 @@ function secondsToMinutesSeconds(seconds) {
 async function getSongs(folder) {
   try {
     const url = `https://rushikesh0864.github.io/Spotify-Frontend-/songs/${folder}/info.json?ts=${Date.now()}`;
+    console.log("Fetching songs from:", url);
+
     const response = await fetch(url);
     const data = await response.json();
 
@@ -445,7 +447,7 @@ async function getSongs(folder) {
     loadSong(0);
     displaySongList();
   } catch (error) {
-    console.error(`Error loading songs from folder "${folder}":`, error);
+    console.error(`❌ Error loading songs from "${folder}":`, error);
   }
 }
 
@@ -459,6 +461,7 @@ function loadSong(index) {
 
 function displaySongList() {
   const container = document.querySelector(".songList");
+  if (!container) return;
   container.innerHTML = "";
   songs.forEach((song, index) => {
     const div = document.createElement("div");
@@ -498,22 +501,24 @@ async function displayAlbums() {
   if (!container) return;
 
   for (const folder of folders) {
+    console.log(`Loading album for folder: ${folder}`);
     try {
-      const url = `https://rushikesh0864.github.io/Spotify-Frontend-/songs/${folder}/info.json?ts=${Date.now()}`;
+      const url = `https://rushikesh0864.github.io/Spotify-Frontend-/songs/${encodeURIComponent(folder)}/info.json?ts=${Date.now()}`;
       const res = await fetch(url);
       const data = await res.json();
 
       const card = document.createElement("div");
       card.className = "albumCard";
       card.innerHTML = `
-        <img src="https://rushikesh0864.github.io/Spotify-Frontend-/songs/${folder}/cover.jpg" onerror="this.src='default.jpg'" />
+        <img src="https://rushikesh0864.github.io/Spotify-Frontend-/songs/${encodeURIComponent(folder)}/cover.jpg" 
+             onerror="this.src='default.jpg'" />
         <h3>${data.title}</h3>
         <p>${data.description}</p>
         <button onclick="getSongs('${folder}')">Open</button>
       `;
       container.appendChild(card);
     } catch (err) {
-      console.error(`Failed to load album ${folder}`, err);
+      console.error(`❌ Failed to load album ${folder}`, err);
     }
   }
 }
