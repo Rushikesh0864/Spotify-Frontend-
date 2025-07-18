@@ -1,15 +1,15 @@
 {
-    "title": "Sleep Songs",
-    "description": "Songs for you",
-    "songs": [
-        "Ariana Grande - 7 rings.mp3",
-        "Ariana Grande- positions.mp3",
-        "AronChupa -Albatraoz.mp3",
-        "Asim Azhar - Jo Tu Na Mila .mp3",
-        "Auburn - Perfect two.mp3",
-        "Charlie Puth - We Don t Talk Anymore.mp3",
-        "Closer- The Chainsmokers.mp3",
-        "Desiigner-Panda.mp3",
-        "REMIX.mp3"
-    ]
+  "title": "Sleep Songs",
+  "description": "Songs for you",
+  "songs": [
+    { "title": "Ariana Grande - 7 rings", "file": "Ariana Grande - 7 rings.mp3" },
+    { "title": "Ariana Grande - Positions", "file": "Ariana Grande- positions.mp3" },
+    { "title": "AronChupa - Albatraoz", "file": "AronChupa -Albatraoz.mp3" },
+    { "title": "Asim Azhar - Jo Tu Na Mila", "file": "Asim Azhar - Jo Tu Na Mila .mp3" },
+    { "title": "Auburn - Perfect Two", "file": "Auburn - Perfect two.mp3" },
+    { "title": "Charlie Puth - We Don’t Talk Anymore", "file": "Charlie Puth - We Don t Talk Anymore.mp3" },
+    { "title": "The Chainsmokers - Closer", "file": "Closer- The Chainsmokers.mp3" },
+    { "title": "Desiigner - Panda", "file": "Desiigner-Panda.mp3" },
+    { "title": "REMIX", "file": "REMIX.mp3" }
+  ]
 }

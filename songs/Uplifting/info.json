@@ -1,7 +1,7 @@
 {
-    "title": "Get up",
-    "description": "You can do it!",
-     "songs": [
-    "Marshmello- One Thing Right.mp3"
+  "title": "Get up",
+  "description": "You can do it!",
+  "songs": [
+    { "title": "Marshmello - One Thing Right", "file": "Marshmello- One Thing Right.mp3" }
   ]
 }

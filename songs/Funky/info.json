@@ -1,7 +1,10 @@
 {
-    "title": "Go Funky",
-    "description": "Lets go Funky",
-    "songs": [
-    "Ariana Grande- positions.mp3"
+  "title": "Go Funky",
+  "description": "Let's go Funky",
+  "songs": [
+    {
+      "title": "Ariana Grande - Positions",
+      "file": "Ariana Grande- positions.mp3"
+    }
   ]
 }

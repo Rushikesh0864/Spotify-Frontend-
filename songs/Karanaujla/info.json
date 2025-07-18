@@ -1,8 +1,10 @@
 {
-    "title": "Karan Aujla",
-    "description": "Karan Aujla for you",
-    "songs": [
-    "Karan Aujla-100 Million.mp3"
+  "title": "Karan Aujla",
+  "description": "Karan Aujla for you",
+  "songs": [
+    {
+      "title": "Karan Aujla - 100 Million",
+      "file": "Karan Aujla-100 Million.mp3"
+    }
   ]
-    
 }

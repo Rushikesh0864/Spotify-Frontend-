@@ -1,5 +1,10 @@
 {
-    "title": "Dark Horse",
-    "description": "Dark Songs for you",
-    "songs": ["We Don't Talk Anymore-CP.mp3"]
+  "title": "Dark Horse",
+  "description": "Dark Songs for you",
+  "songs": [
+    {
+      "title": "We Don't Talk Anymore - CP",
+      "file": "We Don't Talk Anymore-CP.mp3"
+    }
+  ]
 }
