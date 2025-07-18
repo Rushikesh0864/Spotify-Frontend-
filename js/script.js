@@ -432,13 +432,14 @@ function secondsToMinutesSeconds(seconds) {
 
 async function getSongs(folder) {
   try {
-    const url = `https://rushikesh0864.github.io/Spotify-Frontend-/songs/${folder}/info.json?ts=${Date.now()}`;
+    const encodedFolder = encodeURIComponent(folder);
+    const url = `https://rushikesh0864.github.io/Spotify-Frontend-/songs/${encodedFolder}/info.json?ts=${Date.now()}`;
     const response = await fetch(url);
     const data = await response.json();
 
     songs = data.songs.map(song => ({
       title: song,
-      path: `https://rushikesh0864.github.io/Spotify-Frontend-/songs/${folder}/${song}`
+      path: `https://rushikesh0864.github.io/Spotify-Frontend-/songs/${encodedFolder}/${song}`
     }));
 
     currentFolder = folder;
@@ -499,21 +500,23 @@ async function displayAlbums() {
 
   for (const folder of folders) {
     try {
-      const url = `https://rushikesh0864.github.io/Spotify-Frontend-/songs/${folder}/info.json?ts=${Date.now()}`;
+      const encodedFolder = encodeURIComponent(folder);
+      const url = `https://rushikesh0864.github.io/Spotify-Frontend-/songs/${encodedFolder}/info.json?ts=${Date.now()}`;
       const res = await fetch(url);
       const data = await res.json();
 
       const card = document.createElement("div");
       card.className = "albumCard";
       card.innerHTML = `
-        <img src="https://rushikesh0864.github.io/Spotify-Frontend-/songs/${folder}/cover.jpg" onerror="this.src='default.jpg'" />
+        <img src="https://rushikesh0864.github.io/Spotify-Frontend-/songs/${encodedFolder}/cover.jpg"
+             onerror="this.src='default.jpg'" />
         <h3>${data.title}</h3>
         <p>${data.description}</p>
         <button onclick="getSongs('${folder}')">Open</button>
       `;
       container.appendChild(card);
     } catch (err) {
-      console.error(`Failed to load album ${folder}`, err);
+      console.error(`❌ Failed to load album ${folder}`, err);
     }
   }
 }
