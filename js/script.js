@@ -248,6 +248,8 @@
 
 
 // main()
+
+
 // console.log("Lets write js")
 // let currentSong = new Audio();
 // let songs;
@@ -476,11 +478,19 @@ function displaySongList() {
 function updatePlayButton() {
   const playBtn = document.getElementById("play");
   if (!playBtn) return;
-  playBtn.src = currentSong.paused ? "" : "img/pause.svg";
+  playBtn.src = currentSong.paused ? "img/play.svg" : "img/pause.svg";
+}
+
+function updateMuteButton() {
+  const muteBtn = document.getElementById("mute");
+  if (!muteBtn) return;
+  muteBtn.src = currentSong.muted ? "img/unmute.svg" : "img/mute.svg";
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   const playBtn = document.getElementById("play");
+  const muteBtn = document.getElementById("mute");
+
   if (playBtn) {
     playBtn.addEventListener("click", () => {
       if (currentSong.paused) {
@@ -489,6 +499,13 @@ document.addEventListener("DOMContentLoaded", () => {
         currentSong.pause();
       }
       updatePlayButton();
+    });
+  }
+
+  if (muteBtn) {
+    muteBtn.addEventListener("click", () => {
+      currentSong.muted = !currentSong.muted;
+      updateMuteButton();
     });
   }
 
@@ -511,7 +528,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Dynamic folder cards
+  // Load folder cards
   const cardContainer = document.querySelector(".cardContainer");
   if (cardContainer) {
     folders.forEach(async (folder) => {
@@ -524,11 +541,13 @@ document.addEventListener("DOMContentLoaded", () => {
         card.setAttribute("data-folder", folder);
         card.innerHTML = `
           <div class="play">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M5 20V4L19 12L5 20Z" stroke="#141B34" stroke-width="1.5" fill="#000" stroke-linejoin="round" />
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                 xmlns="http://www.w3.org/2000/svg">
+              <path d="M5 20V4L19 12L5 20Z" stroke="#141B34" stroke-width="1.5" fill="#000" stroke-linejoin="round"/>
             </svg>
           </div>
-          <img src="https://rushikesh0864.github.io/Spotify-Frontend-/songs/${folder}/cover.jpg" onerror="this.src='default.jpg'" alt="cover">
+          <img src="https://rushikesh0864.github.io/Spotify-Frontend-/songs/${folder}/cover.jpg"
+               onerror="this.src='img/default.jpg'" alt="cover">
           <h2>${data.title}</h2>
           <p>${data.description}</p>
         `;
