@@ -1,10 +1,5 @@
 {
   "title": "I Love You",
   "description": "Love is in the air",
-  "songs": [
-    {
-      "title": "Auburn - Perfect Two",
-      "file": "Auburn - Perfect two.mp3"
-    }
-  ]
+  "songs": ["Auburn - Perfect two.mp3"]
 }

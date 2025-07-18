@@ -1,10 +1,5 @@
 {
   "title": "Just Chill",
   "description": "Yes, Just Chill",
-  "songs": [
-    {
-      "title": "Closer - The CS",
-      "file": "Closer-The CS.mp3"
-    }
-  ]
+  "songs": ["Closer-The CS.mp3"]
 }

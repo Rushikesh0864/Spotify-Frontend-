@@ -1,10 +1,5 @@
 {
   "title": "Bright Songs",
   "description": "Bright Songs for you",
-  "songs": [
-    {
-      "title": "Avicii - The Nights",
-      "file": "Avicii-The-Nights.mp3"
-    }
-  ]
+  "songs": ["Avicii-The-Nights.mp3"]
 }

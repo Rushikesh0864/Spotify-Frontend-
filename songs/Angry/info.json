@@ -1,10 +1,5 @@
 {
   "title": "Angry Mood",
   "description": "Calm your Anger",
-  "songs": [
-    {
-      "title": "On My Way - AW",
-      "file": "On My Way-AW.mp3"
-    }
-  ]
+  "songs": ["On My Way-AW.mp3"]
 }

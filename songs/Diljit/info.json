@@ -1,10 +1,5 @@
 {
   "title": "Diljit Dosanjh",
   "description": "Diljit Dosanjh hits",
-  "songs": [
-    {
-      "title": "Lover - Diljit Dosanjh",
-      "file": "Diljit Dosanjh-Lover.mp3"
-    }
-  ]
+  "songs": ["Diljit Dosanjh-Lover.mp3"]
 }

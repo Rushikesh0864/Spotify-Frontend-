@@ -406,133 +406,138 @@
 
 // main();
 
-// script.js - updated to support JSON with `songs: [{ title, file }]` format
-
+console.log("Let's write JS");
 let currentSong = new Audio();
 let songs;
 let currFolder;
 
+// Convert seconds to MM:SS
 function secondsToMinutesSeconds(seconds) {
-    if (isNaN(seconds) || seconds < 0) {
-        return "00:00";
-    }
-
+    if (isNaN(seconds) || seconds < 0) return "00:00";
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = Math.floor(seconds % 60);
-
-    const formattedMinutes = String(minutes).padStart(2, '0');
-    const formattedSeconds = String(remainingSeconds).padStart(2, '0');
-
-    return `${formattedMinutes}:${formattedSeconds}`;
+    return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
 }
 
-async function getSongs(folder) {
-    currFolder = folder;
-    let response = await fetch(`songs/${folder}/info.json`);
-    let data = await response.json();
-
-    const songList = document.querySelector(".songList");
-    songList.innerHTML = "";
-
-    // Normalize songs array
-    songs = data.songs.map(song => {
-        if (typeof song === "string") {
-            return { title: song, file: song };
-        }
-        return song;
-    });
-
-    for (let song of songs) {
-        songList.innerHTML += `
-        <div class="songItem">
-            <img class="invert" src="img/music.svg" alt="">
-            <div class="info">
-                <div>${song.title.replace(".mp3", "")}</div>
-            </div>
-            <div class="playnow">
-                <span>Play Now</span>
-                <img class="invert" src="img/play.svg" alt="">
-            </div>
-        </div>`;
-    }
-
-    // Attach play listeners
-    Array.from(document.getElementsByClassName("songItem")).forEach((e, i) => {
-        e.addEventListener("click", () => {
-            playMusic(songs[i].file);
-        });
-    });
-
-    document.querySelector(".folderinfo").innerHTML = `
-        <h2>${data.title}</h2>
-        <p>${data.description}</p>
-    `;
-}
-
-function playMusic(fileName) {
-    currentSong.src = `songs/${currFolder}/${fileName}`;
-    currentSong.play();
-    document.querySelector(".play img").src = "img/pause.svg";
-    document.querySelector(".songinfo").innerHTML = decodeURIComponent(fileName.replace(".mp3", ""));
-    document.querySelector(".songtime").innerHTML = "00:00 / 00:00";
-}
-
-async function getFolders() {
-    let response = await fetch("songs/folders.json");
-    let data = await response.json();
-    let cardsContainer = document.querySelector(".cards");
-
-    for (let folder of data.folders) {
-        let info = await fetch(`songs/${folder}/info.json`);
-        let infoJson = await info.json();
-
-        cardsContainer.innerHTML += `
-        <div data-folder="${folder}" class="card">
-            <div class="play">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653v12.693c0 1.335 1.477 2.163 2.6 1.497l10.826-6.347a1.725 1.725 0 000-2.994L7.85 4.155c-1.123-.666-2.6.162-2.6 1.497z" />
-                </svg>
-            </div>
-            <img src="songs/${folder}/cover.jpg" alt="">
-            <h2>${infoJson.title}</h2>
-            <p>${infoJson.description}</p>
-        </div>`;
-    }
-
-    Array.from(document.getElementsByClassName("card")).forEach(e => {
-        e.addEventListener("click", async () => {
-            await getSongs(e.dataset.folder);
-        });
-    });
-}
-
-currentSong.addEventListener("timeupdate", () => {
-    document.querySelector(".songtime").innerHTML = `${secondsToMinutesSeconds(currentSong.currentTime)} / ${secondsToMinutesSeconds(currentSong.duration)}`;
-});
-
-document.querySelector(".play").addEventListener("click", () => {
-    if (currentSong.paused) {
+// Play music from songs array
+const playMusic = (track, pause = false) => {
+    currentSong.src = `https://rushikesh0864.github.io/Spotify-Frontend-/songs/${currFolder}/${track}`;
+    if (!pause) {
         currentSong.play();
-        document.querySelector(".play img").src = "img/pause.svg";
-    } else {
-        currentSong.pause();
-        document.querySelector(".play img").src = "img/play.svg";
+        play.src = "pause.svg";
     }
-});
+    document.querySelector(".songinfo").innerHTML = decodeURIComponent(track.replace(".mp3", ""));
+    document.querySelector(".songtime").innerHTML = "00:00 / 00:00";
+};
 
-document.querySelector("#next").addEventListener("click", () => {
-    let index = songs.findIndex(song => `songs/${currFolder}/${song.file}` === currentSong.src);
-    if (index + 1 < songs.length) {
-        playMusic(songs[index + 1].file);
+// Main logic
+async function main() {
+    let a = await fetch("https://rushikesh0864.github.io/Spotify-Frontend-/songs/");
+    let html = await a.text();
+    let div = document.createElement("div");
+    div.innerHTML = html;
+    let anchors = div.getElementsByTagName("a");
+
+    let cardsContainer = document.querySelector(".cards");
+    for (let i = 0; i < anchors.length; i++) {
+        const element = anchors[i];
+        if (element.href.endsWith("/")) {
+            let folder = element.href.split("/").slice(-2, -1)[0];
+
+            let info = await fetch(`https://rushikesh0864.github.io/Spotify-Frontend-/songs/${folder}/info.json`);
+            let infoJson = await info.json();
+
+            cardsContainer.innerHTML += `<div data-folder="${folder}" class="card">
+                <div class="play">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-play-fill" viewBox="0 0 16 16">
+                        <path d="M11.596 8.697l-6.363 3.692A.5.5 0 0 1 4 12.191V3.81a.5.5 0 0 1 .76-.424l6.363 3.692a.5.5 0 0 1 0 .848z"/>
+                    </svg>
+                </div>
+                <img src="songs/${folder}/cover.jpg" alt="">
+                <h2>${infoJson.title}</h2>
+                <p>${infoJson.description}</p>
+            </div>`;
+        }
     }
-});
 
-document.querySelector("#prev").addEventListener("click", () => {
-    let index = songs.findIndex(song => `songs/${currFolder}/${song.file}` === currentSong.src);
-    if (index - 1 >= 0) {
-        playMusic(songs[index - 1].file);
-    }
-});
+    // Add click listener to each card
+    Array.from(document.getElementsByClassName("card")).forEach(card => {
+        card.addEventListener("click", async () => {
+            currFolder = card.dataset.folder;
+            let a = await fetch(`https://rushikesh0864.github.io/Spotify-Frontend-/songs/${currFolder}/info.json`);
+            let response = await a.json();
+            songs = response.songs;
 
-// INIT
-getFolders();
+            let songUL = document.querySelector(".songlist").getElementsByTagName("ul")[0];
+            songUL.innerHTML = "";
+            for (const song of songs) {
+                songUL.innerHTML += `<li>
+                    <img class="invert" src="music.svg" alt="">
+                    <div class="info">
+                        <div>${song.replace(".mp3", "")}</div>
+                    </div>
+                    <div class="playnow">
+                        <span>Play Now</span>
+                        <img class="invert" src="play.svg" alt="">
+                    </div>
+                </li>`;
+            }
+
+            // Attach event listener to each song
+            Array.from(document.querySelector(".songlist").getElementsByTagName("li")).forEach((e, i) => {
+                e.addEventListener("click", () => {
+                    playMusic(songs[i]);
+                });
+            });
+
+            playMusic(songs[0]);
+        });
+    });
+
+    // Time Update Event
+    currentSong.addEventListener("timeupdate", () => {
+        document.querySelector(".songtime").innerHTML = `${secondsToMinutesSeconds(currentSong.currentTime)} / ${secondsToMinutesSeconds(currentSong.duration)}`;
+        document.querySelector(".circle").style.left = (currentSong.currentTime / currentSong.duration) * 100 + "%";
+    });
+
+    // Seekbar click
+    document.querySelector(".seekbar").addEventListener("click", e => {
+        let percent = (e.offsetX / e.target.getBoundingClientRect().width);
+        currentSong.currentTime = percent * currentSong.duration;
+    });
+
+    // Play / Pause
+    play.addEventListener("click", () => {
+        if (currentSong.paused) {
+            currentSong.play();
+            play.src = "pause.svg";
+        } else {
+            currentSong.pause();
+            play.src = "play.svg";
+        }
+    });
+
+    // Previous Button
+    previous.addEventListener("click", () => {
+        let index = songs.indexOf(currentSong.src.split("/").slice(-1)[0]);
+        if (index > 0) {
+            playMusic(songs[index - 1]);
+        }
+    });
+
+    // Next Button
+    next.addEventListener("click", () => {
+        let index = songs.indexOf(currentSong.src.split("/").slice(-1)[0]);
+        if (index < songs.length - 1) {
+            playMusic(songs[index + 1]);
+        }
+    });
+
+    // Volume Control
+    document.querySelector(".range input").addEventListener("input", (e) => {
+        currentSong.volume = parseFloat(e.target.value);
+    });
+}
+
+main();
+

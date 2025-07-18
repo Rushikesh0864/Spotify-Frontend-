@@ -2,29 +2,11 @@
   "title": "Copyright Songs",
   "description": "Cover Songs for you",
   "songs": [
-    {
-      "title": "DripReports - Skechers",
-      "file": "DripReports-Skechers .mp3"
-    },
-    {
-      "title": "Ed Sheeran - South of the Border",
-      "file": "Ed Sheeran - South of the Border.mp3"
-    },
-    {
-      "title": "Ed Sheeran & Justin Bieber - IDC",
-      "file": "Ed Sheeran & Justin Bieber- IDC.mp3"
-    },
-    {
-      "title": "Maroon 5 - Girls Like You ft. Cardi B",
-      "file": "Maroon 5 - Girls Like You ft. Cardi B.mp3"
-    },
-    {
-      "title": "Marshmello - One Thing Right",
-      "file": "Marshmello- One Thing Right.mp3"
-    },
-    {
-      "title": "Martin Garrix, Troye Sivan - There For You",
-      "file": "Martin Garrix, Troye Sivan - There For You.mp3"
-    }
+    "DripReports-Skechers .mp3",
+    "Ed Sheeran - South of the Border.mp3",
+    "Ed Sheeran & Justin Bieber- IDC.mp3",
+    "Maroon 5 - Girls Like You ft. Cardi B.mp3",
+    "Marshmello- One Thing Right.mp3",
+    "Martin Garrix, Troye Sivan - There For You.mp3"
   ]
 }
