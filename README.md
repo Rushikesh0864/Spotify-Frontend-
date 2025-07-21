@@ -14,18 +14,15 @@ A responsive Spotify-like web music player built using **HTML, CSS, and JavaScri
 
 ## 📂 Project Structure
 
-project-root/
-│
-├── index.html
-├── style.css
-├── script.js
-├── songs/
-│ ├── library1/
-│ │ ├── song1.mp3
-│ │ ├── cover.jpg
-│ │ └── info.json
-│ └── library2/
-│ └── ...
+- `index.html` – Main HTML file  
+- `style.css` – CSS for layout and responsiveness  
+- `script.js` – JavaScript logic for audio playback and UI interaction  
+- `songs/` – Folder containing all music libraries  
+  - `songs/angry/` – Contains `song1.mp3`, `cover.jpg`, and `info.json`  
+  - `songs/ncs/` – Contains NCS music files and metadata  
+  - `songs/cs/` – Another folder with songs and a JSON info file  
+- `README.md` – Project documentation (this file)
+
 
 
 ## 🛠️ Technologies Used
